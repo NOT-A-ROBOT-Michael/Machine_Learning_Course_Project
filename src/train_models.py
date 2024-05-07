@@ -23,7 +23,7 @@ X_train, X_test, y_train, y_test = train_test_split(X,y ,
 lr = LogisticRegression()
 lr.fit(X_train, y_train)
 ypred_lr =lr.predict(X_test)
-print('Logisstic Regression Accuracy Score:')
+print('Logistic Regression Accuracy Score:')
 print(accuracy_score(ypred_lr,y_test))
 
 forest = RandomForestClassifier()
