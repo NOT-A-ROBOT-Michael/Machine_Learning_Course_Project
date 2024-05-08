@@ -9,7 +9,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
 
+from category_encoders.one_hot import OneHotEncoder
+from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
+
+import joblib
 
 df = pd.read_csv('../data/train_data.csv')
 
@@ -66,3 +70,13 @@ print(f'Accuracy: ',accuracy_score(ypred_ada,y_test))
 print(f'Precision: ',precision_score(ypred_ada,y_test))
 print(f'Recall: ',recall_score(ypred_ada,y_test))
 print(f'F1-score: ',f1_score(ypred_ada,y_test))
+
+def dump_data():
+    final_model_dt = make_pipeline(
+    OneHotEncoder(use_cat_names=True),
+    RandomForestClassifier(max_depth=6, random_state=42),)
+
+    final_model_dt.fit(X_train, y_train)
+
+    joblib.dump(forest, '../artifacts/model_lr.pkl')
+    joblib.dump(final_model_dt, '../artifacts/final_model_dt.pkl')
