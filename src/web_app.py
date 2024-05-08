@@ -12,7 +12,7 @@ import feature_engineering
 
 feature_engineering.dump_data()
 
-model = joblib.load('../artifacts/final_model_dt.pkl')
+model = joblib.load('../artifacts/model_2.pkl')
 
 coefficients = model.named_steps["randomforestclassifier"].feature_importances_
 features = model.named_steps['randomforestclassifier'].feature_names_in_
