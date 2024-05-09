@@ -55,8 +55,8 @@ def dataprep(filepath):
     df = pd.concat([df.drop(columns=columns_encode), encoded_df], axis=1)
     
     # adding a new column for total income by combining applicant income and co-applicant income
-    df['total_income'] = df['applicant_income'] + df['coapplicant_income']
-    df= df.copy()
+    # df['total_income'] = df['applicant_income'] + df['coapplicant_income']
+    # df= df.copy()
     
     # skewed features
     skewed_features = ['applicant_income', 'coapplicant_income', 'loan_amount', 'loan_amount_term'] # , 'total_income'

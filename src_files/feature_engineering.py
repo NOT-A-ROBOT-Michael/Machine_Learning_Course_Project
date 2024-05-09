@@ -26,6 +26,10 @@ def feature_engineering(filepath):
     # Contactinating columns
     df = pd.concat([X_oversampled, y_oversampled], axis=1)
     
+    # adding a new column for total income by combining applicant income and co-applicant income
+    df['total_income'] = df['applicant_income'] + df['coapplicant_income']
+    df= df.copy()
+    
     write_filepath = filepath + "\\data\\feature_e_data.csv"
 
     # writing to csv file
