@@ -1,6 +1,5 @@
 import warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,11 +7,15 @@ import seaborn as sb
 
 from skimpy import clean_columns
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import StandardScaler
+
+
 
 # C:\\Users\\iyesme\\repos\\Machine_Learning_Course_Project_GroupM
 
 def dataprep(filepath):
+    
+    
+    
     raw_filepath = filepath + '\\data\\raw_data.csv'
     
     #read raw data from cdv file
@@ -52,8 +55,8 @@ def dataprep(filepath):
     df = pd.concat([df.drop(columns=columns_encode), encoded_df], axis=1)
     
     # adding a new column for total income by combining applicant income and co-applicant income
-    # df['total_income'] = df['applicant_income'] + df['coapplicant_income']
-    # df= df.copy()
+    df['total_income'] = df['applicant_income'] + df['coapplicant_income']
+    df= df.copy()
     
     # skewed features
     skewed_features = ['applicant_income', 'coapplicant_income', 'loan_amount', 'loan_amount_term'] # , 'total_income'
@@ -66,6 +69,7 @@ def dataprep(filepath):
     clean_encoded_featured_transformed_df.to_csv(store_filepath, index=True)
     
     
-dataprep("C:\\Users\\iyesme\\repos\\Machine_Learning_Course_Project_GroupM")
+
+
 
 

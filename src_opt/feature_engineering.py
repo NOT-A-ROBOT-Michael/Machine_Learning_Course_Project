@@ -1,11 +1,14 @@
 import pandas as pd
 from imblearn.over_sampling import RandomOverSampler
+from sklearn.exceptions import ConvergenceWarning
 
-from src_opt import train_second_model
 
 def feature_engineering(filepath):
+    
+    read_filepath = filepath+'\\data\\train_data.csv'
+    
     # reading data from csv file
-    df = pd.read_csv(filepath)
+    df = pd.read_csv(read_filepath)
 
     # Unamed: 0 column
     df.drop(df.columns[0], axis=1, inplace=True)
@@ -22,9 +25,13 @@ def feature_engineering(filepath):
 
     # Contactinating columns
     df = pd.concat([X_oversampled, y_oversampled], axis=1)
+    
+    write_filepath = filepath + "\\data\\feature_e_data.csv"
 
     # writing to csv file
-    df.to_csv(filepath,index=True)
+    df.to_csv(write_filepath, index=True)
 
     return df
+
+# feature_engineering("C:\\Users\\iyesme\\repos\\Machine_Learning_Course_Project_GroupM")
 

@@ -1,11 +1,14 @@
 import pandas as pd
-import numpy as np
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.exceptions import ConvergenceWarning
+import warnings
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 
 def train_first_model(filepath):
+    
     
     read_filepath = filepath+'\\data\\train_data.csv'
     
@@ -20,15 +23,12 @@ def train_first_model(filepath):
     X = df.drop('loan_status', axis = 1)
 
     # splitting the data between test and train, although x_test is not needed
-    X_train, X_test, y_train, y_test = train_test_split(X,y , 
-                                   random_state=104,  
-                                   test_size=0.25,  
-                                   shuffle=True)
+    X_train, X_test, y_train, y_test = train_test_split(X,y , random_state=104,  test_size=0.25,  shuffle=True)
 
     logistic = LogisticRegression()
     logistic.fit(X_train, y_train)
 
-    dump_filepath = filepath+'\\data\\model_1.pkl'
+    dump_filepath = filepath+'\\artifacts\\model_1.pkl'
     
     #dump the logistic regression model into model_1.pkl
     joblib.dump(logistic,dump_filepath)

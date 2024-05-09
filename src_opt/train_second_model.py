@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import joblib
 
 from sklearn.model_selection import train_test_split
@@ -7,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def train_second_model(filepath):
+    
     
     read_filepath = filepath+'\\data\\feature_e_data.csv'
     
@@ -29,7 +29,7 @@ def train_second_model(filepath):
     forest = RandomForestClassifier()
     forest.fit(X_train, y_train)
 
-    dump_filepath = filepath+'\\data\\model_2.pkl'
+    dump_filepath = filepath+'\\artifacts\\model_2.pkl'
     
     #dump the forest model into model_2.pkl
     joblib.dump(forest,dump_filepath)
