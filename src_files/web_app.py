@@ -6,51 +6,6 @@ import dash_bootstrap_components as dbc
 import joblib
 import numpy as np
 import pandas as pd
-import prepare_data
-import train_models
-import feature_engineering
-
-feature_engineering.dump_data()
-
-model = joblib.load('../artifacts/model_2.pkl')
-
-coefficients = model.named_steps["randomforestclassifier"].feature_importances_
-features = model.named_steps['randomforestclassifier'].feature_names_in_
-
-feat_imp = pd.Series(
-    np.exp(coefficients), index=features
-).sort_values(ascending=True)
-
-def check_eligibility(loan_ID, gender, marital_status, education, dependents, income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area):
-    input_data = pd.DataFrame({
-        'Loan_ID': [loan_ID],
-        'Gender': [1 if gender == 'Female' else 0],
-        'Married': [1 if marital_status == 'Married' else 0],
-        'Education': [1 if education == 'Graduate' else 0],
-        'Dependents': [dependents],
-        'ApplicantIncome': [income],
-        'LoanAmount': [loan_amount],
-        'CreditHistory': [1 if credit_history == 'Good' else 0],
-        'SelfEmployed': [1 if self_employed == 'Yes' else 0],
-        'CoapplicantIncome': [coapplicant_income],
-        'LoanAmountTerm': [loan_amount_term],
-        'PropertyArea_Rural': [1 if property_area == 'Rural' else 0],
-        'PropertyArea_Semiurban': [1 if property_area == 'Semiurban' else 0],
-        'PropertyArea_Urban': [1 if property_area == 'Urban' else 0]
-    })       
-
-    temp_df = prepare_data.prepare_data_final(input_data)
-    
-    Xtrain = train_models.modeling(temp_df)
-
-    prediction = model.predict(Xtrain)
-
-    return "Eligible" if np.round(prediction[0] == 1) else "Not Eligible"
-
-def write_to_csv(inputs):
-    with open('../data/web_app.csv', mode='a', newline='\n') as file:
-        writer = csv.writer(file)
-        writer.writerow(inputs)
 
 gender_options = [{'label': 'Male', 'value': 'Male'}, {'label': 'Female', 'value': 'Female'}]
 marital_status_options = [{'label': 'Single', 'value': 'Single'}, {'label': 'Married', 'value': 'Married'}]
@@ -58,8 +13,56 @@ education_options = [{'label': 'Graduate', 'value': 'Graduate'}, {'label': 'Not 
 credit_history_options = [{'label': 'Good', 'value': 'Good'}, {'label': 'Bad', 'value': 'Bad'}]
 self_employed_options = [{'label': 'Yes', 'value': 'Yes'}, {'label': 'No', 'value': 'No'}]
 property_area_options = [{'label': 'Urban', 'value': 'Urban'}, {'label': 'Semiurban', 'value': 'Semiurban'}, {'label': 'Rural', 'value': 'Rural'}]
+    
+    
+    
+    
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])  
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+def check_eligibility(gender, marital_status, education, dependents,  income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area):
+    input_data = pd.DataFrame({
+        'applicant_income':[income],
+        'coapplicant_income':[coapplicant_income],
+        'loan_amount':[loan_amount],
+        'loan_amount_term':[loan_amount_term],
+        'credit_history':[1 if credit_history == 'Good' else 0],
+        'gender_Female':[1 if gender == 'Female' else 0],
+        'gender_Male':[1 if gender == 'Male' else 0],
+        'married_No':[1 if marital_status == 'Single' else 0],
+        'married_Yes':[1 if marital_status == 'Married' else 0],
+        'dependents_0':[1 if dependents == 0 else 0],
+        'dependents_1':[1 if dependents == 1 else 0],
+        'dependents_2':[1 if dependents == 2 else 0],
+        'dependents_3+':[1 if dependents >= 3 else 0],
+        'education_Graduate':[1 if education == 'Graduate' else 0],
+        'education_Not Graduate':[1 if education == 'Not Graduate' else 0],
+        'self_employed_No':[1 if self_employed == 'No' else 0],
+        'self_employed_Yes':[1 if self_employed == 'Yes' else 0],
+        'property_area_Rural':[1 if property_area == 'Rural' else 0],
+        'property_area_Semiurban':[1 if property_area == 'Semiurban' else 0],
+        'property_area_Urban':[1 if property_area == 'Urban' else 0],
+        'total_income': [income + coapplicant_income]
+        
+    })       
+
+    model = joblib.load('../artifacts/model_2.pkl')
+    #Xtrain = train_models.modeling(temp_df)
+
+    prediction = model.predict(input_data)
+
+    return "Eligible" if np.round(prediction[0] == 1) else "Not Eligible"
+
+
+
+def write_to_csv(inputs):
+    with open('../data/web_app.csv', mode='a', newline='\n') as file:
+        writer = csv.writer(file)
+        writer.writerow(inputs)
+
+
+
+
 
 app.layout = html.Div([
     html.H1("Loan Eligibility Checker", className='title'),
@@ -185,10 +188,11 @@ app.layout = html.Div([
      dash.dependencies.State('loan-amount-term-input', 'value'),
      dash.dependencies.State('property-area-dropdown', 'value')]
 )
-def update_output(n_clicks, gender, marital_status, dependents, education, income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area):
+def update_output(n_clicks, gender, marital_status, education, dependents,  income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area):
     if n_clicks > 0:
-        result = check_eligibility(1, gender, marital_status, dependents, education, self_employed, income, coapplicant_income, loan_amount, credit_history, loan_amount_term, property_area)
-        inputs = [1, gender, marital_status, dependents, education, income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area]
+        result = check_eligibility( gender, marital_status, education, dependents, income, loan_amount , credit_history,  self_employed,  coapplicant_income,   loan_amount_term, property_area)
+        print("working")
+        inputs = [0, gender, marital_status,  education, dependents, income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area]
         write_to_csv(inputs)
         return html.Div(f"Loan Eligibility: {result}", className='result')
     else:

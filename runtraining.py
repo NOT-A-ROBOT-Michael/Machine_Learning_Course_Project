@@ -5,7 +5,7 @@ import pathlib
 
 from src_files import data_prep, train_first_model, feature_engineering, train_second_model 
 
-def main():
+def train_models():
     print("///////////////start///////////////")
     filepath = find_file_path()
     data_prep.dataprep(filepath)
@@ -19,4 +19,4 @@ def main():
 def find_file_path():
     return str(pathlib.Path(__file__).parent.resolve())   
 
-main()
+train_models()
