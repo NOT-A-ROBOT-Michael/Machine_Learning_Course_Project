@@ -18,6 +18,7 @@ property_area_options = [{'label': 'Urban', 'value': 'Urban'}, {'label': 'Semiur
     
     
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])  
+server = app.server
 
 
 def check_eligibility(gender, marital_status, education, dependents,  income, loan_amount, credit_history, self_employed, coapplicant_income, loan_amount_term, property_area):
