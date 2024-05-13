@@ -6,6 +6,7 @@ import run_training
 
 def main():
     run_training.train_models()
+    
     for file in os.listdir(find_file_path()):
         if file.startswith("web_app"):
             exFile = find_file_path() + "\\web_app.py"
