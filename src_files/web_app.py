@@ -50,8 +50,8 @@ def check_eligibility(gender, marital_status, education, dependents,  income, lo
     #Xtrain = train_models.modeling(temp_df)
 
     prediction = model.predict(input_data)
-
-    return "Eligible" if np.round(prediction[0] == 1) else "Not Eligible"
+    
+    return "Not Eligible" if prediction[0] == "N" else "Eligible"
 
 
 

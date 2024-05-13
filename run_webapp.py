@@ -1,18 +1,20 @@
 import warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
-
-from src_files import web_app
-import runtraining
+import os
+import pathlib
+import run_training
 
 def main():
-    print("///////////////start///////////////")
-    runtraining.train_models()
-    web_app
-    print("///////////////stop///////////////")
-    
-    
+    run_training.train_models()
+    for file in os.listdir(find_file_path()):
+        if file.startswith("web_app"):
+            exFile = find_file_path() + "\\web_app.py"
+            exec(open(exFile).read())
+            break
+
     
 def find_file_path():
-    return str(pathlib.Path(__file__).parent.resolve())   
+    return str(pathlib.Path(__file__).parent.resolve()) + "\\src_files"   
+
 
 main()
